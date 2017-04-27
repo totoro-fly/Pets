@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_editor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="com.totoro_fly.pets.EditorActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:paddingTop="16dp"
+            android:text="Overview"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/colorAccent"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:paddingLeft="4dp"
+            >
+
+            <EditText
+                android:id="@+id/name_edit_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:hint="Name"
+                android:imeActionLabel="下一项"
+                android:imeOptions="actionNext"
+                android:inputType="textCapWords"
+                android:textAppearance="?android:textAppearanceMedium"
+                />
+
+            <EditText
+                android:id="@+id/Breed_edit_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:hint="Breed"
+                android:imeActionLabel="完成"
+                android:imeOptions="actionDone"
+                android:inputType="textCapWords"
+                android:textAppearance="?android:textAppearanceMedium"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/container_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:paddingTop="16dp"
+            android:text="Gender"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/colorAccent"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            >
+
+            <Spinner
+                android:id="@+id/gender_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingRight="16dp"
+                android:spinnerMode="dropdown"
+                >
+            </Spinner>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/container_measurement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:paddingTop="16dp"
+            android:text="Measurement"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/colorAccent"
+            />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:paddingLeft="4dp"
+            >
+
+            <EditText
+                android:id="@+id/weight_edit_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:hint="Weight"
+                android:imeActionLabel="完成"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:textAppearance="?android:textAppearanceMedium"
+                />
+
+            <TextView
+                android:id="@+id/weight_units_edit_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingRight="16dp"
+                android:paddingTop="16dp"
+                android:text="kg"
+                android:textAppearance="?android:textAppearanceSmall"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
