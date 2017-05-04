@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class PetDbHelper extends SQLiteOpenHelper {
-    private final static String DATABASE_NAME = "pets.db";
+    private final static String DATABASE_NAME = "pets2.db";
     private final static int DATABASE_VERSION = 1;
 
     public PetDbHelper(Context context) {

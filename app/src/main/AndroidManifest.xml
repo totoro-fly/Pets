@@ -17,6 +17,12 @@
         </activity>
         <activity android:name=".EditorActivity">
         </activity>
+
+        <provider
+            android:name=".data.PetProvider"
+            android:authorities="com.totoro_fly.pets"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

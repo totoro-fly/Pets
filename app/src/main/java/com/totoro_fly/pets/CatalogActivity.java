@@ -3,15 +3,17 @@ package com.totoro_fly.pets;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.totoro_fly.pets.data.PetContract;
 import com.totoro_fly.pets.data.PetDbHelper;
@@ -51,6 +53,7 @@ public class CatalogActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -65,25 +68,28 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void insetPet() {
-        SQLiteDatabase db = petDbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put(PetContract.PetEntry.COLUMN_PET_NAME, "Tom");
         values.put(PetContract.PetEntry.COLUMN_PET_BREED, "Xo");
         values.put(PetContract.PetEntry.COLUME_PET_GENDER, PetContract.PetEntry.GENDER_MALE);
         values.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, 8);
-        long str = db.insert(PetContract.PetEntry.TABLE_NAME, null, values);
-        Log.d("TAG", String.valueOf(str));
+        Uri uri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI, values);
+        if (uri == null)
+            Toast.makeText(this, "插入失败", Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(this, "插入成功", Toast.LENGTH_LONG).show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onStart() {
         displayDatabaseInfo();
         super.onStart();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void displayDatabaseInfo() {
         TextView textView = (TextView) findViewById(R.id.pet_text_view);
-        SQLiteDatabase db = petDbHelper.getReadableDatabase();
         String[] projection = {
                 PetContract.PetEntry._ID,
                 PetContract.PetEntry.COLUMN_PET_NAME,
@@ -91,15 +97,16 @@ public class CatalogActivity extends AppCompatActivity {
                 PetContract.PetEntry.COLUME_PET_GENDER,
                 PetContract.PetEntry.COLUMN_PET_WEIGHT};
 
-        Cursor cursor = db.query(
-                PetContract.PetEntry.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+//        Cursor cursor = db.query(
+//                PetContract.PetEntry.TABLE_NAME,
+//                projection,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null
+//        );
+        Cursor cursor = getContentResolver().query(PetContract.PetEntry.CONTENT_URI, projection, null, null, null, null);
         try {
             textView.setText(cursor.getCount() + "\n");
             textView.append(PetContract.PetEntry._ID + " " +

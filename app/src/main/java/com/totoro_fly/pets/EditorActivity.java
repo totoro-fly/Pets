@@ -1,7 +1,7 @@
 package com.totoro_fly.pets;
 
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +16,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.totoro_fly.pets.data.PetContract;
-import com.totoro_fly.pets.data.PetDbHelper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -42,14 +42,12 @@ public class EditorActivity extends AppCompatActivity {
     @Bind(R.id.activity_editor)
     LinearLayout activityEditor;
     private int mGendeer = PetContract.PetEntry.GENDER_UNKNOEWN;
-    private PetDbHelper petDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
         ButterKnife.bind(this);
-        petDbHelper = new PetDbHelper(this);
         setSpinner();
     }
 
@@ -102,7 +100,6 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     private void insert() {
-        SQLiteDatabase db = petDbHelper.getReadableDatabase();
         String nameStr = nameEditView.getText().toString().trim();
         String breedStr = BreedEditView.getText().toString().trim();
         String weightStr = weightEditView.getText().toString().trim();
@@ -112,6 +109,10 @@ public class EditorActivity extends AppCompatActivity {
         values.put(PetContract.PetEntry.COLUMN_PET_BREED, breedStr);
         values.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, weightStr);
         values.put(PetContract.PetEntry.COLUME_PET_GENDER, gender);
-        long l = db.insert(PetContract.PetEntry.TABLE_NAME, null, values);
+        Uri uri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI, values);
+        if (uri == null)
+            Toast.makeText(this, "插入失败", Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(this, "插入成功", Toast.LENGTH_LONG).show();
     }
 }
