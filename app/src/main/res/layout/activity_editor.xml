@@ -45,6 +45,7 @@
                 android:imeActionLabel="下一项"
                 android:imeOptions="actionNext"
                 android:inputType="textCapWords"
+                android:textAllCaps="true"
                 android:textAppearance="?android:textAppearanceMedium"
                 />
 
@@ -59,6 +60,7 @@
                 android:imeActionLabel="完成"
                 android:imeOptions="actionDone"
                 android:inputType="textCapWords"
+                android:textAllCaps="true"
                 android:textAppearance="?android:textAppearanceMedium"
                 />
 
@@ -136,6 +138,7 @@
                 android:imeActionLabel="完成"
                 android:imeOptions="actionDone"
                 android:inputType="number"
+                android:textAllCaps="true"
                 android:textAppearance="?android:textAppearanceMedium"
                 />
 

@@ -22,6 +22,7 @@ public final class PetContract {
                 ContentResolver.CURSOR_DIR_BASE_TYPE+"/"+CONTENT_AUTHORITY+"/"+PATH_PETS;
         public static final String CENTENT_ITEM_TYPE=
                 ContentResolver.CURSOR_ITEM_BASE_TYPE+"/"+CONTENT_AUTHORITY+"/"+PATH_PETS;
+        
         public final static String TABLE_NAME = "pets";
         public final static String _ID = BaseColumns._ID;
         public final static String COLUMN_PET_NAME = "name";

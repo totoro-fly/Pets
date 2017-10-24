@@ -1,5 +1,6 @@
 package com.totoro_fly.pets;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -7,38 +8,62 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.totoro_fly.pets.data.PetContract;
-import com.totoro_fly.pets.data.PetDbHelper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CatalogActivity extends AppCompatActivity {
+public class CatalogActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    @Bind(R.id.pet_text_view)
-    TextView petTextView;
     @Bind(R.id.floating_button)
     FloatingActionButton floatingButton;
     @Bind(R.id.activity_catalog)
     RelativeLayout activityCatalog;
-    PetDbHelper petDbHelper;
+    @Bind(R.id.pet_list_view)
+    ListView petListView;
+    @Bind(R.id.imageView)
+    ImageView imageView;
+    @Bind(R.id.textView2)
+    TextView textView2;
+    @Bind(R.id.textView3)
+    TextView textView3;
+    @Bind(R.id.empty_view)
+    ConstraintLayout emptyView;
+    private static final int PET_LOADER = 0;
+    private PetCursorAdapter mPetCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
         ButterKnife.bind(this);
-        petDbHelper = new PetDbHelper(this);
-
+        mPetCursorAdapter = new PetCursorAdapter(this, null);
+        petListView.setEmptyView(emptyView);
+        petListView.setAdapter(mPetCursorAdapter);
+        petListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+                Uri currentPeturi = ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI, id);
+                intent.setData(currentPeturi);
+                startActivity(intent);
+            }
+        });
+        getLoaderManager().initLoader(PET_LOADER, null, this);
     }
 
     @OnClick(R.id.floating_button)
@@ -59,12 +84,17 @@ public class CatalogActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.insert_menu:
                 insetPet();
-                displayDatabaseInfo();
                 return true;
             case R.id.delete_all:
+                deleteAllPets();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteAllPets() {
+        int rowsDelete=getContentResolver().delete(PetContract.PetEntry.CONTENT_URI,null,null);
+        Toast.makeText(this,"刪除全部數據 "+rowsDelete+" 行",Toast.LENGTH_LONG).show();
     }
 
     private void insetPet() {
@@ -80,63 +110,35 @@ public class CatalogActivity extends AppCompatActivity {
             Toast.makeText(this, "插入成功", Toast.LENGTH_LONG).show();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    protected void onStart() {
-        displayDatabaseInfo();
-        super.onStart();
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private void displayDatabaseInfo() {
-        TextView textView = (TextView) findViewById(R.id.pet_text_view);
+    @Override
+    public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {
                 PetContract.PetEntry._ID,
                 PetContract.PetEntry.COLUMN_PET_NAME,
                 PetContract.PetEntry.COLUMN_PET_BREED,
                 PetContract.PetEntry.COLUME_PET_GENDER,
-                PetContract.PetEntry.COLUMN_PET_WEIGHT};
-
-//        Cursor cursor = db.query(
-//                PetContract.PetEntry.TABLE_NAME,
-//                projection,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null
-//        );
-        Cursor cursor = getContentResolver().query(PetContract.PetEntry.CONTENT_URI, projection, null, null, null, null);
-        try {
-            textView.setText(cursor.getCount() + "\n");
-            textView.append(PetContract.PetEntry._ID + " " +
-                    PetContract.PetEntry.COLUMN_PET_NAME + " " +
-                    PetContract.PetEntry.COLUME_PET_GENDER + " " +
-                    PetContract.PetEntry.COLUMN_PET_BREED + " " +
-                    PetContract.PetEntry.COLUMN_PET_WEIGHT + " \n"
-            );
-
-            int idColumnIndex = cursor.getColumnIndex(PetContract.PetEntry._ID);
-            int nameColumIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_NAME);
-            int breedColumnIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_BREED);
-            int genderColumnIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUME_PET_GENDER);
-            int weightColumnIndex = cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_WEIGHT);
-            while (cursor.moveToNext()) {
-                int currentID = cursor.getInt(idColumnIndex);
-                String currentName = cursor.getString(nameColumIndex);
-                String currentBreed = cursor.getString(breedColumnIndex);
-                String currentGender = cursor.getString(genderColumnIndex);
-                String currentWeight = cursor.getString(weightColumnIndex);
-                textView.append(
-                        currentID + " " +
-                                currentName + " " +
-                                currentBreed + " " +
-                                currentGender + " " +
-                                currentWeight + " \n"
-                );
-            }
-        } finally {
-            cursor.close();
-        }
+                PetContract.PetEntry.COLUMN_PET_WEIGHT
+        };
+        return new android.content.CursorLoader(
+                this,
+                PetContract.PetEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null
+        );
     }
+
+
+    @Override
+    public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
+        mPetCursorAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(android.content.Loader<Cursor> loader) {
+        mPetCursorAdapter.swapCursor(null);
+    }
+
 }
